@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Collections.Specialized;
+using OpenNETCF;
 
 namespace OpenNETCF.MQTT
 {
     public class SubscriptionCollection : IEnumerable<Subscription>
     {
         private Dictionary<string, Subscription> m_subscriptions = new Dictionary<string, Subscription>();
-
+        
         public event EventHandler<GenericEventArgs<Subscription>> SubscriptionAdded;
         public event EventHandler<GenericEventArgs<string>> SubscriptionRemoved;
 

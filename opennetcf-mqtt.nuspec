@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>opennetcf-mqtt</id>
+        <version>1.0.0.0</version>
+        <title>OpenNETCF MQTT Library</title>
+        <authors>Chris Tacke</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>OpenNETCF's implementation of the MQ Telemetry Transport (MQTT) protocol in a friendly .NET library form. Huzzah!</description>
+
+    <dependencies>
+      <group>
+        <dependency id="com.opennetcf.extensions.pcl" version="1.0.17139"/>
+      </group>
+    </dependencies>
+    </metadata>
+    <files>
+        <!-- .NET 4.0 and later -->
+        <file src=".\OpenNETCF.MQTT\bin\Release\OpenNETCF.MQTT.dll" target="lib\net45" />
+
+        <!-- Mono -->
+        <file src=".\OpenNETCF.MQTT\bin\Release\Mono\OpenNETCF.MQTT.dll" target="lib\MonoTouch40" />
+
+    </files>
+</package>
