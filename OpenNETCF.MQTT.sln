@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNETCF.MQTT", "OpenNETCF.MQTT\OpenNETCF.MQTT.csproj", "{A2DB4897-8167-49BC-ADEC-0020D1A3E0C3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNETCF.MQTT.Unit.Test", "OpenNETCF.MQTT.Unit.Test\OpenNETCF.MQTT.Unit.Test.csproj", "{E0B21AC7-AFA9-43CC-BBE6-18DB0F62D8E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenNETCF.MQTT.Mono", "OpenNETCF.MQTT\OpenNETCF.MQTT.Mono.csproj", "{2209799F-5B06-449F-86FF-0807DECF9289}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		MonoRelease|Any CPU = MonoRelease|Any CPU
+		Nat's|Any CPU = Nat's|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2DB4897-8167-49BC-ADEC-0020D1A3E0C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2DB4897-8167-49BC-ADEC-0020D1A3E0C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2DB4897-8167-49BC-ADEC-0020D1A3E0C3}.MonoRelease|Any CPU.ActiveCfg = MonoRelease|Any CPU
+		{A2DB4897-8167-49BC-ADEC-0020D1A3E0C3}.MonoRelease|Any CPU.Build.0 = MonoRelease|Any CPU
+		{A2DB4897-8167-49BC-ADEC-0020D1A3E0C3}.Nat's|Any CPU.ActiveCfg = Nat's|Any CPU
+		{A2DB4897-8167-49BC-ADEC-0020D1A3E0C3}.Nat's|Any CPU.Build.0 = Nat's|Any CPU
+		{A2DB4897-8167-49BC-ADEC-0020D1A3E0C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2DB4897-8167-49BC-ADEC-0020D1A3E0C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0B21AC7-AFA9-43CC-BBE6-18DB0F62D8E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0B21AC7-AFA9-43CC-BBE6-18DB0F62D8E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0B21AC7-AFA9-43CC-BBE6-18DB0F62D8E3}.MonoRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{E0B21AC7-AFA9-43CC-BBE6-18DB0F62D8E3}.MonoRelease|Any CPU.Build.0 = Release|Any CPU
+		{E0B21AC7-AFA9-43CC-BBE6-18DB0F62D8E3}.Nat's|Any CPU.ActiveCfg = Release|Any CPU
+		{E0B21AC7-AFA9-43CC-BBE6-18DB0F62D8E3}.Nat's|Any CPU.Build.0 = Release|Any CPU
+		{E0B21AC7-AFA9-43CC-BBE6-18DB0F62D8E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0B21AC7-AFA9-43CC-BBE6-18DB0F62D8E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2209799F-5B06-449F-86FF-0807DECF9289}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2209799F-5B06-449F-86FF-0807DECF9289}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2209799F-5B06-449F-86FF-0807DECF9289}.MonoRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{2209799F-5B06-449F-86FF-0807DECF9289}.MonoRelease|Any CPU.Build.0 = Release|Any CPU
+		{2209799F-5B06-449F-86FF-0807DECF9289}.Nat's|Any CPU.ActiveCfg = Release|Any CPU
+		{2209799F-5B06-449F-86FF-0807DECF9289}.Nat's|Any CPU.Build.0 = Release|Any CPU
+		{2209799F-5B06-449F-86FF-0807DECF9289}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2209799F-5B06-449F-86FF-0807DECF9289}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

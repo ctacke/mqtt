@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2209799F-5B06-449F-86FF-0807DECF9289}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OpenNETCF.MQTT</RootNamespace>
+    <AssemblyName>OpenNETCF.MQTT</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\Mono\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\Mono\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OpenNETCF.Extensions, Version=1.0.17139.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\com.opennetcf.extensions.pcl.1.0.17139.0\lib\portable45-net45+win8+wpa81\OpenNETCF.Extensions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Constants\ConnectResult.cs" />
+    <Compile Include="Constants\MessageType.cs" />
+    <Compile Include="Constants\QoS.cs" />
+    <Compile Include="Messages\Connect.cs" />
+    <Compile Include="Messages\ConnectAck.cs" />
+    <Compile Include="Messages\Disconnect.cs" />
+    <Compile Include="Messages\FixedHeader.cs" />
+    <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\PingRequest.cs" />
+    <Compile Include="Messages\PingResponse.cs" />
+    <Compile Include="Messages\Publish.cs" />
+    <Compile Include="Messages\Subscribe.cs" />
+    <Compile Include="Messages\Unsubscribe.cs" />
+    <Compile Include="Messages\VariableHeaders\ConnectHeaderData.cs" />
+    <Compile Include="Messages\VariableHeaders\HeaderData.cs" />
+    <Compile Include="Messages\VariableHeaders\MessageIDHeaderData.cs" />
+    <Compile Include="Messages\VariableHeaders\PublishHeaderData.cs" />
+    <Compile Include="Messages\VariableHeaders\VariableHeader.cs" />
+    <Compile Include="MQTTString.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Subscription.cs" />
+    <Compile Include="MQTTClient.cs" />
+    <Compile Include="SubscriptionCollection.cs" />
+    <Compile Include="Constants\ConnectionState.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
