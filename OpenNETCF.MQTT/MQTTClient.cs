@@ -16,7 +16,11 @@ using System.Diagnostics;
 
 #if !WindowsCE
 using System.Net.Security;
+using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 #endif
+
+[assembly: InternalsVisibleTo("OpenNETCF.MQTT.Unit.Test")]
 
 namespace OpenNETCF.MQTT
 {
@@ -34,7 +38,6 @@ namespace OpenNETCF.MQTT
         private int DefaultPingPeriod = 60000;
         private int DefaultReconnectPeriod = 5000;
 
-        private Thread m_rxThread;
         private TcpClient m_client;
         private Stream m_stream;
         private Timer m_pingTimer;
@@ -46,6 +49,9 @@ namespace OpenNETCF.MQTT
         private string m_lastUserName;
         private string m_lastPassword;
         private string m_lastClientIdentifier;
+        private bool m_reconnecting;
+        private Task m_rxTask;
+        private CancellationTokenSource m_rxCancelToken;
 
         private CircularBuffer<Message> m_messageQueue = new CircularBuffer<Message>(100);
 
@@ -163,16 +169,26 @@ namespace OpenNETCF.MQTT
             get { return m_lastClientIdentifier; }
         }
 
-        public void Connect(string clientID, string userName, string password)
+        public async Task ConnectAsync(string clientID, string userName = null, string password = null)
         {
-            if (Connect(BrokerHostName, BrokerPort))
+            if (await ConnectAsync(BrokerHostName, BrokerPort))
             {
                 var connectMessage = new Connect(userName, password, clientID);
-                Send(connectMessage);
+                await SendAsync(connectMessage);
             }
         }
 
+        public void Connect(string clientID, string userName = null, string password = null)
+        {
+            AsyncHelper.RunSync(async () => await ConnectAsync(clientID, userName, password));
+        }
+
         private bool Connect(string hostName, int port)
+        {
+            return AsyncHelper.RunSync(async () => await ConnectAsync(hostName, port));
+        }
+
+        private async Task<bool> ConnectAsync(string hostName, int port)
         {
             if (IsConnected) throw new Exception("Already connected");
 
@@ -182,13 +198,12 @@ namespace OpenNETCF.MQTT
             
             // create the client and connect
             m_client = new TcpClient();
-#if !WindowsCE
             m_client.SendTimeout = DefaultTimeout;
             m_client.ReceiveTimeout = DefaultTimeout;
-#endif
+
             try
             {
-                m_client.Connect(BrokerHostName, BrokerPort);
+                await m_client.ConnectAsync(BrokerHostName, BrokerPort);
             }
             catch (Exception ex)
             {
@@ -200,38 +215,37 @@ namespace OpenNETCF.MQTT
                 return false;
             }
 
-            Stream stream = m_client.GetStream();
+            var stream = m_client.GetStream();
 
             if (UseSSL)
             {
-#if !WindowsCE
+                throw new NotSupportedException();
+                /*
                 var ssl = new SslStream(stream, false, new RemoteCertificateValidationCallback(CertValidationProc));
 
                 // TODO: allow local certificates
                 ssl.AuthenticateAsClient(SSLTargetHost);
 
                 stream = ssl;
-#endif
+                */
             }
 
             m_stream = stream;
 
-            if (m_rxThread != null)
+            m_rxCancelToken = new CancellationTokenSource();
+
+            if (m_rxTask != null)
             {
+                m_rxCancelToken.Cancel();
                 try
                 {
-                    m_rxThread.Abort();
+                    m_rxTask.Wait();
                 }
-                catch (ThreadAbortException) { }
+                catch { /* NOP from our cancellation */ }
+                m_rxCancelToken.Dispose();
             }
 
-            m_rxThread = new Thread(RxThreadProc)
-            {
-                IsBackground = true,
-                Name = "MQTTBrokerProxy.RxThread"
-            };
-
-            m_rxThread.Start();
+            m_rxTask = Task.Run(() => RxThreadProc(), m_rxCancelToken.Token);
 
             return true;
         }
@@ -244,7 +258,18 @@ namespace OpenNETCF.MQTT
             IsConnected = false;
             Send(new Disconnect());
 
-            m_client.Close();
+            if (m_rxTask != null)
+            {
+                m_rxCancelToken.Cancel();
+                try
+                {
+                    m_rxTask.Wait();
+                }
+                catch { /* NOP from our cancellation */ }
+                m_rxCancelToken.Dispose();
+            }
+
+            m_client.Dispose();
         }
 
         public bool IsConnected 
@@ -297,7 +322,7 @@ namespace OpenNETCF.MQTT
             Send(ping);
         }
 
-        private void RxThreadProc()
+        private async void RxThreadProc()
         {
             try
             {
@@ -313,6 +338,9 @@ namespace OpenNETCF.MQTT
                 IsConnected = false;
             }
 
+            m_rxCancelToken.Token.ThrowIfCancellationRequested();
+
+
             // start a ping timer on a period less than the above timeout (else we'll timeout and exit)
             m_pingTimer = new Timer(PingTimerProc, null, PingPeriod, PingPeriod); 
             
@@ -320,6 +348,11 @@ namespace OpenNETCF.MQTT
 
             while((ConnectionState == ConnectionState.Connecting) || (ConnectionState == ConnectionState.Connected))
             {
+                if (m_rxCancelToken.Token.IsCancellationRequested)
+                {
+                    m_rxCancelToken.Token.ThrowIfCancellationRequested();
+                }
+
                 header.Clear();
 
                 // the first byte gives us the type
@@ -328,7 +361,7 @@ namespace OpenNETCF.MQTT
                     var byte0 = m_stream.ReadByte();
                     if (byte0 == -1)
                     {
-                        Thread.Sleep(500);
+                        await Task.Delay(500);
                         continue;
                     }
 
@@ -378,7 +411,6 @@ namespace OpenNETCF.MQTT
 
         }
 
-        private bool m_reconnecting;
         private void ReconnectProc(object state)
         {
             DoReconnect();
@@ -478,6 +510,11 @@ namespace OpenNETCF.MQTT
 
         internal void Send(Message message)
         {
+            AsyncHelper.RunSync(async () => await SendAsync(message));
+        }
+
+        internal async Task SendAsync(Message message)
+        {
             if ((!IsConnected) && !(message is Connect))
             {
                 // queue these up for delivery after (re)connect
@@ -511,7 +548,7 @@ namespace OpenNETCF.MQTT
 
             try
             {
-                m_stream.Write(data, 0, data.Length);
+                await m_stream.WriteAsync(data, 0, data.Length);
                 m_stream.Flush();
             }
             catch(Exception ex)
@@ -532,10 +569,21 @@ namespace OpenNETCF.MQTT
 
         public void Publish(string topic, string data, QoS qos, bool retain)
         {
-            Publish(topic, data, qos, retain);
+            AsyncHelper.RunSync(async () => await PublishAsync(topic, data, qos, retain));
         }
 
         public void Publish(string topic, byte[] data, QoS qos, bool retain)
+        {
+            AsyncHelper.RunSync(async () => await PublishAsync(topic, data, qos, retain));
+        }
+
+        public async Task PublishAsync(string topic, string data, QoS qos, bool retain)
+        {
+            var bytes = Encoding.UTF8.GetBytes(data);
+            await PublishAsync(topic, bytes, qos, retain);
+        }
+
+        public async Task PublishAsync(string topic, byte[] data, QoS qos, bool retain)
         {
             Publish publish;
 
@@ -549,7 +597,7 @@ namespace OpenNETCF.MQTT
                 publish = new Publish(topic, data, messageID, qos, retain);
             }
 
-            Send(publish);
+            await SendAsync(publish);
         }
     }
 }

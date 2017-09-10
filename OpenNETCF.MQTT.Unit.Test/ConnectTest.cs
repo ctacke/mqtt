@@ -16,5 +16,6 @@ namespace OpenNETCF.MQTT.Unit.Test
 
             var bytes = connect.Serialize();
         }
+
     }
 }
