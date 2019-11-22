@@ -9,7 +9,7 @@ namespace ctacke.MQTT
         private string[] m_topics;
 
         public Unsubscribe(string[] topics, ushort messageID)
-            : base(MessageType.Subscribe, QoS.AcknowledgeDelivery, false, false)
+            : base(MessageType.Unsubscribe, QoS.AcknowledgeDelivery, false, false)
         {
             Validate
                 .Begin()
